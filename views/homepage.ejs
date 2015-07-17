@@ -1,3 +1,5 @@
+<script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
+
 <section class="container">
   <div class="row">
 
@@ -21,15 +23,36 @@
     </div>
 
     <div class="col-xs-9 col-sm-9 col-md-10">
+
+
+      <div id="canvas" style="width:500px; height:500px"></div>
+
+      <div id="rakuten_travel">
+        <section class="container">
+          <div class="row">
+            <div>Hotels</div>
+            <div class="col-md-2">
+              <img style="max-width:150px; max-height:150px;" src="http://img.travel.rakuten.co.jp/share/HOTEL/27901/27901.jpg">
+              <div>ひらかたサンプラザホテル</div>
+            </div>
+
+            <div class="col-md-2">
+              <img style="max-width:150px; max-height:150px;" src="http://img.travel.rakuten.co.jp/share/HOTEL/27901/27901.jpg">
+              <div>ひらかたサンプラザホテル</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+
       <ul id="chat-timeline"></ul>
 
-
-        <div class="form-group">
-          <div class="col-xs-9 col-sm-10 col-md-10">
-            <input type="text" class="form-control" id="my-message" placeholder="text to send...">
-          </div>
-          <button id="send-button" class="btn btn-default">Send</button>
+      <div class="form-group">
+        <div class="col-xs-9 col-sm-10 col-md-10">
+          <input type="text" class="form-control" id="my-message" placeholder="text to send...">
         </div>
+        <button id="send-button" class="btn btn-default">Send</button>
+      </div>
     </div>
   </div>
 </section>

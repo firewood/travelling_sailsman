@@ -2,7 +2,21 @@
   <div class="row">
 
     <div class="col-xs-3 col-sm-3 col-md-2">
-        <div>Channels</div>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Channel Name</th>
+            </tr>
+          </thead>
+          <tbody id="channels">
+          </tbody>
+        </table>
+
+        <div id="left-bar">
+          <p id="current-channel"></p>
+          <input type="text" class="form-control" id="channel-name" placeholder="channel name">
+          <button id="new-channel-button" class="btn btn-default">Create</button>
+        </div>
 
     </div>
 

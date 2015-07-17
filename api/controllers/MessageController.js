@@ -11,9 +11,11 @@ module.exports = {
     Message.find().exec(function(err, messages) {
       console.log('Message::find');
 
-      Message.subscribe(req, messages);
-      if (req.options.autoWatch) {
-        Message.watch(req);
+      if (req.isSocket) {
+        Message.subscribe(req, messages);
+        if (req.options.autoWatch) {
+          Message.watch(req);
+        }
       }
 
       res.json(messages);
@@ -25,7 +27,9 @@ module.exports = {
     Message.create({ text: text }).exec(function(err, message) {
       console.log('Message::create');
 
-      Message.publishCreate(message, !req.options.mirror && req);
+      if (req.isSocket) {
+        Message.publishCreate(message, !req.options.mirror && req);
+      }
 
       res.json(message);
     });

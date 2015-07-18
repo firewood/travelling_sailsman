@@ -2,6 +2,17 @@
 
   var currentChannel;
 
+  var crafts = {};
+  for (var i = 0; i < crafts_flat.length; ++i) {
+    var c = crafts_flat[i];
+    if (!crafts[c[0]]) {
+      crafts[c[0]] = [];
+    }
+    crafts[c[0]].push(c[1]);
+  }
+  console.log(crafts);
+
+/*
   function appendChannel(name) {
     $('#channels').append('<tr><td>' + name + '</td></tr>');
   }
@@ -43,7 +54,6 @@
     });
   });
 
-
   $('#new-channel-button').on('click', function() {
     var $text = $('#channel-name');
     var name = $text.val();
@@ -64,8 +74,10 @@
       $text.val('');
     });
   });
+*/
 
 
+  var large = 1;
   var map = new OpenLayers.Map("canvas");
   var mapnik = new OpenLayers.Layer.OSM();
   var zoom = 6;
@@ -94,6 +106,48 @@
   map.addControl(click);
   click.activate();
 
+  var ViewModel = {
+    crafts: ko.observableArray([]),
+    ichibas: ko.observableArray([]),
+    travels: ko.observableArray([]),
+    onCraftClick: function(data) {
+      console.log("CRAFT");
+      console.log(data);
+      findRakutenIchiba(data);
+    }
+  };
+
+  ko.applyBindings(ViewModel);
+
+  function shrinkMap(pref, city, lonlat) {
+    console.log("ADDRESS: " + pref.Name + ", " + city.Name);
+    if (large) {
+      large = 0;
+      $('#canvas').animate({
+            width: '640px',
+            height: '480px'
+      }, 1000)
+      .promise().done(function() {
+        map.updateSize();
+        map.setCenter(lonlat, 10);
+        $('#panel').toggleClass("hide");
+      });
+    } else {
+      map.setCenter(lonlat, 10);
+    }
+
+    $('#pref').text(pref.Name);
+    $('#city').text(city.Name);
+
+    ViewModel.crafts.removeAll();
+    var arr = crafts[pref.Name];
+    if (arr.length) {
+      for (var i = 0; i < arr.length; ++i) {
+        ViewModel.crafts.push(arr[i]);
+      }
+    }
+  }
+
   function onMapClick(lon, lat, rawLonLat) {
     console.log("lon: " + lon + ", lat: " + lat);
 
@@ -101,13 +155,40 @@
       var pref = res.pref;
       var city = res.city;
       if (pref && city) {
-        console.log("ADDRESS: " + pref.Name + ", " + city.Name);
+        shrinkMap(pref, city, rawLonLat);
       } else {
         console.log("Not found");
       }
     });
 
     findRakutenTravel(lon, lat);
+  }
+
+  function findRakutenIchiba(keyword) {
+    var rakuten_appid = '1016165842635314191';
+    var endpoint = 'https://app.rakuten.co.jp/services/api/IchibaItem/Search/20140222';
+    var url = endpoint + '?formatVersion=2&applicationId=' + rakuten_appid + '&keyword=' + keyword;
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json'
+    }).done(function(data, status, xhr) {
+      ViewModel.ichibas.removeAll();
+      var items = data.Items;
+      if (items) {
+        var remain = 5;
+        for (var i = 0; i < items.length; ++i) {
+          var item = items[i];
+          console.log(item);
+          if (item.imageFlag == 1) {
+            ViewModel.ichibas.push(item);
+            if (--remain <= 0) {
+              break;
+            }
+          }
+        }
+      }
+    });
   }
 
   function findRakutenTravel(lon, lat) {
@@ -120,8 +201,30 @@
       type: 'GET',
       dataType: 'json'
     }).done(function(data, status, xhr) {
-      console.log("RAKUTEN");
+      console.log("TRAVEL");
       console.log(data);
+
+      ViewModel.travels.removeAll();
+      var items = data.hotels;
+      if (items) {
+        var remain = 5;
+        for (var i = 0; i < items.length; ++i) {
+          var item = items[i];
+          console.log(item);
+
+          var extra = item[1].hotelRatingInfo;
+          var rating = '';
+          if (extra && extra.serviceAverage) {
+            rating = '☆ ' + extra.serviceAverage;
+          }
+          item[0].rating = rating;
+
+          ViewModel.travels.push(item);
+          if (--remain <= 0) {
+            break;
+          }
+        }
+      }
     });
   }
 

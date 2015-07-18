@@ -117,6 +117,10 @@
   click.activate();
 
   var ViewModel = {
+    pref: ko.observable(''),
+    city: ko.observable(''),
+    pref_link: ko.observable(''),
+    city_link: ko.observable(''),
     crafts: ko.observableArray([]),
     ichibas: ko.observableArray([]),
     travels: ko.observableArray([]),
@@ -147,8 +151,11 @@
       map.setCenter(lonlat, 10);
     }
 
-    $('#pref').text(pref.Name);
-    $('#city').text(city.Name);
+    var google = 'https://www.google.co.jp/search?q=';
+    ViewModel.pref(pref.Name);
+    ViewModel.city(city.Name);
+    ViewModel.pref_link(google + pref.Name);
+    ViewModel.city_link(google + pref.Name + city.Name);
 
     var machiraku_link = machiraku[pref.Name];
     ViewModel.machiraku(machiraku_link ? machiraku_link : '');

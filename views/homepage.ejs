@@ -4,13 +4,15 @@
   <div class="row">
 
     <div class="col-sm-12 col-md-9">
-      <div id="canvas" style="width:1000px; height:1000px"></div>
+      <div id="canvas" style="width:1024px; height:1024px"></div>
     </div>
 
-    <div id="panel" class="col-sm-12 col-md-3 hide">
+    <div id="panel" class="col-sm-12 col-md-3 contents hide">
 
       <h2 id="pref"></h2>
       <h3 id="city"></h3>
+
+      <br>
 
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -26,6 +28,15 @@
           </table>
         </div>
       </div>
+
+      <a data-bind="attr: {href: machiraku}" target="_blank">
+        <h4>&gt;&gt; まち楽</h4>
+      </a>
+
+      <a href="#">
+        <h4 id="back_to_top">&gt;&gt; Back to top</h4>
+      </a>
+
     </div>
 
   </div>
@@ -33,7 +44,7 @@
 
 <br>
 
-<section class="container">
+<section class="contents container hide">
   <div class="row">
     <div class="col-md-11">
       <div class="panel panel-default">
@@ -55,7 +66,7 @@
   </div>
 </section>
 
-<section class="container">
+<section class="contents container hide">
   <div class="row">
     <div class="col-md-11">
       <div class="panel panel-default">

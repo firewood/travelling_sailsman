@@ -10,7 +10,13 @@
     }
     crafts[c[0]].push(c[1]);
   }
-  console.log(crafts);
+//  console.log(crafts);
+
+  var machiraku = {};
+  for (var i = 0; i < machiraku_flat.length; ++i) {
+    var m = machiraku_flat[i];
+    machiraku[m[0]] = m[1];
+  }
 
 /*
   function appendChannel(name) {
@@ -76,17 +82,21 @@
   });
 */
 
+  function back_to_top() {
+    large = 1;
+    map.setCenter(default_lonLat, default_zoom);
+  }
 
   var large = 1;
   var map = new OpenLayers.Map("canvas");
   var mapnik = new OpenLayers.Layer.OSM();
-  var zoom = 6;
   map.addLayer(mapnik);
 
   var proj4326 = new OpenLayers.Projection("EPSG:4326");
   var proj900913 = new OpenLayers.Projection("EPSG:900913");
-  var lonLat = new OpenLayers.LonLat(135.00, 34.39).transform(proj4326, proj900913);
-  map.setCenter(lonLat, zoom);
+  var default_lonLat = new OpenLayers.LonLat(137.00, 35.5).transform(proj4326, proj900913);
+  var default_zoom = 6;
+  back_to_top();
 
   OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
     initialize:function(options){
@@ -110,6 +120,7 @@
     crafts: ko.observableArray([]),
     ichibas: ko.observableArray([]),
     travels: ko.observableArray([]),
+    machiraku: ko.observable(''),
     onCraftClick: function(data) {
       console.log("CRAFT");
       console.log(data);
@@ -130,7 +141,7 @@
       .promise().done(function() {
         map.updateSize();
         map.setCenter(lonlat, 10);
-        $('#panel').toggleClass("hide");
+        $('.contents').toggleClass("hide");
       });
     } else {
       map.setCenter(lonlat, 10);
@@ -138,6 +149,9 @@
 
     $('#pref').text(pref.Name);
     $('#city').text(city.Name);
+
+    var machiraku_link = machiraku[pref.Name];
+    ViewModel.machiraku(machiraku_link ? machiraku_link : '');
 
     ViewModel.crafts.removeAll();
     var arr = crafts[pref.Name];
@@ -227,5 +241,20 @@
       }
     });
   }
+
+  $('#back_to_top').click(function() {
+    if (!large) {
+      $('.contents').toggleClass("hide");
+
+      $('#canvas').animate({
+        width: '1024px',
+        height: '1024px'
+      }, 1000)
+      .promise().done(function() {
+        map.updateSize();
+        back_to_top();
+      });
+    }
+  });
 
 })();
